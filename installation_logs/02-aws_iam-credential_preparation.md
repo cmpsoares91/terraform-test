@@ -39,3 +39,7 @@ aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 region=us-west-2
 output=json
  ```
+ 
+## Create key pair for SSH connection to the EC2 instance:
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+ssh-keygen -t rsa -b 4096 -C "cmpsoares91@gmail.com"
