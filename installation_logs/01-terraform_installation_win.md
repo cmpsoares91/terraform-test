@@ -10,7 +10,7 @@ We've downloaded v0.11.13 (64-bit): https://releases.hashicorp.com/terraform/0.1
 We normally install tooling under `C:\tools`, so we unzipped it to `C:\tools\terraform_0.11.13_windows_amd64`
 
 ## Set the environment variables:
-I'm assuming you know how to go to environement variables, and here create a new variable called `TERRAFORM_HOME` with the folder path of the Terraform binary from the previous step.
+I'm assuming you know your way around Windows environement variables, so go there and create a new variable called `TERRAFORM_HOME` with the folder path of the Terraform binary from the previous step.
 We will use this variable to add it to the `Path` variable by appending `%TERRAFORM_HOME%` to the end of its value.
 
 ## Test the installation:
