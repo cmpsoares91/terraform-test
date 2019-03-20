@@ -1,8 +1,13 @@
 # Preparing AWS IAM Credentials to access the ressources
-Sources: https://learn.hashicorp.com/terraform/getting-started/build
-		 https://aws.amazon.com/pt/blogs/apn/terraform-beyond-the-basics-with-aws/
-		 https://www.terraform.io/docs/providers/aws/index.html
-		 https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
+Sources:
+
+https://learn.hashicorp.com/terraform/getting-started/build
+
+https://aws.amazon.com/pt/blogs/apn/terraform-beyond-the-basics-with-aws/
+
+https://www.terraform.io/docs/providers/aws/index.html
+
+https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 
 ## Creating a IAM user:
 > An AWS Identity and Access Management (IAM) user is an entity that you create in AWS to represent the person or application that uses it to interact with AWS. A user in AWS consists of a name and credentials.
@@ -10,7 +15,7 @@ Sources: https://learn.hashicorp.com/terraform/getting-started/build
 Source: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html
 
  * To create a new IAM user we need to log in to our AWS Console account and go to the following page: https://console.aws.amazon.com/iam/home?#security_credential
- * Click on the `Add user` button, in the next page name the user what you want (for this test we're naming it `terraform-test`) and select the as *Access type*: "Programmatic access". Finish this step by clicking "next"
+ * Click on the `Add user` button, in the next page name the user what you want (for this test we're naming it `terraform-test`) and select the as **Access type**: "Programmatic access". Finish this step by clicking "next"
  * If we do not have a IAM group yet we should create it here:
     * Click on the "Create group" button
 	* Name it what you want, we named it `terraform-test-group`
