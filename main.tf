@@ -1,21 +1,24 @@
+# Creation of the AWS ressource (base resource to access the API)
 provider "aws"  {
 	shared_credentials_file = "%UserProfile%\\.aws\\credentials"
 	profile                 = "terraform-test"
 	region                  = "us-east-1"
 	
-	# Make it faster by skipping something
-	skip_get_ec2_platforms      = true
-	skip_metadata_api_check     = true
-	skip_region_validation      = true
-	skip_credentials_validation = true
-	skip_requesting_account_id  = true
+	# We can make it faster by skipping some of the following steps by setting it to true
+	skip_get_ec2_platforms      = false
+	skip_metadata_api_check     = false
+	skip_region_validation      = false
+	skip_credentials_validation = false
+	skip_requesting_account_id  = false
 }
 
+# Creation of our key-pair in AWS
 resource "aws_key_pair" "terraform-keys" {
   key_name = "terraform-test-keys"
   public_key = "${file("${path.root}/terraform-test-keys.pub")}"
 }
 
+# To define firewall rules to our server we need to create a security group:
 resource "aws_security_group" "vakt_test_sgroup" {
   name = "vakt_test"
 
@@ -26,7 +29,6 @@ resource "aws_security_group" "vakt_test_sgroup" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   
-  # HTTP access from the VPC
   ingress {
     from_port   = 80
     to_port     = 80
@@ -39,12 +41,11 @@ resource "aws_security_group" "vakt_test_sgroup" {
     to_port   = "22"
     protocol  = "tcp"
 
-    # To keep this example simple, we allow incoming SSH requests from any IP. In real-world usage, you should only
-    # allow SSH requests from trusted servers, such as a bastion host or VPN server.
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
+# Now let's create the EC2 instance and perform a base installation of Nginx to it:
 resource "aws_instance" "vakt_test" {
   ami           = "ami-f4cc1de2"
   instance_type = "t2.micro"
@@ -52,12 +53,10 @@ resource "aws_instance" "vakt_test" {
   associate_public_ip_address = true
   
   connection {
-    # The default username for our AMI
+    # The default username for our Ubuntu AMI
     user = "ubuntu"
     type        = "ssh"
     private_key = "${file("${path.root}/terraform-test-keys")}"
-
-    # The connection will use the local SSH agent for authentication.
   }
   key_name = "${aws_key_pair.terraform-keys.id}"
 
@@ -66,9 +65,7 @@ resource "aws_instance" "vakt_test" {
     Name = "vakt_test-public"
   }
   
-  # We run a remote provisioner on the instance after creating it.
-  # In this case, we just install nginx and start it. By default,
-  # this should be on port 80
+
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get -y update",
@@ -78,14 +75,17 @@ resource "aws_instance" "vakt_test" {
   }
 }
 
+# Create and assign our Elastic IP to the instance so we don't have a new IP every single time we perform a small change to the instance's configurations
 resource "aws_eip" "ip" {
   instance = "${aws_instance.vakt_test.id}"
 }
 
+# Print out the Public IP Address
 output "Public IP Address" {
   value = "${aws_eip.ip.public_ip}"
 }
 
+# Print out the Public DNS Address
 output "Public DNS Address" {
   value = "${aws_eip.ip.public_dns}"
 }
